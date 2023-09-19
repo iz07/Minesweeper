@@ -143,11 +143,11 @@ class Board(State):
     
     if not self.game.playing:
       if all_tiles_flipped:
-        draw_text(display, self.font, 'You win!', 'White', SCREEN_WIDTH//2, SCREEN_HEIGHT//2)
-        draw_text(display, self.font, 'Press space to play again', 'White', SCREEN_WIDTH//2, SCREEN_HEIGHT//2 + 48)
+        draw_text(display, self.font, 'You win!', 'White', SCREEN_WIDTH//2, (self.h//2) * TILE_SIZE)
+        draw_text(display, self.font, 'Press space to play again', 'White', SCREEN_WIDTH//2, (self.h//2) * TILE_SIZE + 40)
       else:
-        draw_text(display, self.font, 'You lose', 'White', SCREEN_WIDTH//2, SCREEN_HEIGHT//2)
-        draw_text(display, self.font, 'Press space to play again', 'White', SCREEN_WIDTH//2, SCREEN_HEIGHT//2 + 48)
+        draw_text(display, self.font, 'You lose', 'White', SCREEN_WIDTH//2, (self.h//2) * TILE_SIZE)
+        draw_text(display, self.font, 'Press space to play again', 'White', SCREEN_WIDTH//2, (self.h//2) * TILE_SIZE + 40)
 
   def flip_mines(self):
     for mine in self.mines:
@@ -161,6 +161,8 @@ class Board(State):
     if not (0 <= r < self.h) or not (0 <= c < self.w) or self.tiles[r][c].flipped or (r, c) in self.mines:
       return
     # Flip tile
+    if self.tiles[r][c].flagged:
+      self.tiles[r][c].trigger_flag()
     self.tiles[r][c].flip_self()
     # If the tile has mines nearby, only flip this tile
     if self.tiles[r][c].mines_nearby > 0:
